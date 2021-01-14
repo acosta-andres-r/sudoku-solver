@@ -22,7 +22,7 @@ function App() {
   const [table, setTable] = useState(Array.from(Array(9), () => new Array(9).fill("")));
 
   useEffect(() => {
-    console.table(table);
+    // console.table(table);
   }, [table])
 
   const handleInsertInRow = (event) => {
@@ -38,21 +38,49 @@ function App() {
 
   const duplicateNumbersIndexes = (array) => {
     let duplicates = array.map((elem, i) => {
-      return (array.includes(elem) && elem != '');
+      return (array.includes(elem) && elem !== '');
     });
     // return index of duplicate
     return duplicates;
   };
 
+  // CONSTRAINS:
+  const checkedRowConstrain = (i, j, num) => {
+    const row = [...table[j]];
+    const result = row.findIndex((elem, index) => {
+      console.log("Check", elem === num);
+      if (index !== i) {
+        if (elem === num.toString()) return true;
+      }
+      return false
+    });
+    return result === -1 ? true : false;
+  }
+
+  const checkedColumnConstrain = (i, j, num) => {
+    const column = table.map(elem => elem[i]);
+    const result = column.findIndex((elem, index) => {
+      console.log("Check col", elem === num);
+      if (index !== i) {
+        if (elem === num.toString()) return true;
+      }
+      return false
+    });
+    return result === -1 ? true : false;
+  }
+
   const handleCheckSolution = () => {
-    const numbers = [...baseNum]
-    const row = [...table[0]]
-    console.log(row);
+    // const numbers = [...baseNum]
+    // const row = [...table[0]]
+    // console.log(row);
 
-    const remain = numbers.filter((elem, i) => !row.includes(elem));
+    // const remain = numbers.filter((elem, i) => !row.includes(elem));
 
-    console.log('index', duplicateNumbersIndexes(row));
-    console.log(remain);
+    // console.log('index', duplicateNumbersIndexes(row));
+    // console.log(remain);
+
+    console.log('Passed', checkedRowConstrain(0, 0, 1));
+    console.log('Passed', checkedColumnConstrain(0, 0, 1));
   };
 
   return (
