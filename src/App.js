@@ -45,42 +45,69 @@ function App() {
   };
 
   // CONSTRAINS:
-  const checkedRowConstrain = (i, j, num) => {
-    const row = [...table[j]];
-    const result = row.findIndex((elem, index) => {
-      console.log("Check", elem === num);
-      if (index !== i) {
-        if (elem === num.toString()) return true;
+
+  const checkConstrains = (array, iExeption, number) => {
+    const result = array.findIndex((elem, index) => {
+      console.log("Check", elem === number);
+      if (index !== iExeption) {
+        if (elem === number.toString()) return true;
       }
       return false
     });
     return result === -1 ? true : false;
+  };
+
+  const checkedRow = (i, j, num) => {
+    const row = [...table[j]];
+    return checkConstrains(row, i, num);
   }
 
-  const checkedColumnConstrain = (i, j, num) => {
+  const checkedColumn = (i, j, num) => {
     const column = table.map(elem => elem[i]);
-    const result = column.findIndex((elem, index) => {
-      console.log("Check col", elem === num);
-      if (index !== i) {
-        if (elem === num.toString()) return true;
-      }
-      return false
-    });
-    return result === -1 ? true : false;
+    return checkConstrains(column, j, num);
   }
+
+  const findRange = (i) => {
+    if (i <= 2) return [0, 2];
+    if (i <= 5) return [3, 5];
+    return [6, 8];
+  };
+  const checkedSection = (i, j, num) => {
+    const rangeColumn = findRange(i);
+    const rangeRow = findRange(j);
+    let section = [];
+
+    const jInSection = j - rangeRow[0];
+    const iInSection = i - rangeColumn[0];
+
+    let jCurrent = 0;
+    let iCurrent = 0;
+    let indexSection;
+
+    let jRow;
+    for (jRow = rangeRow[0]; jRow <= rangeRow[1]; jRow++) {
+      const rowSection = [...table[jRow]];
+
+      let iCol;
+      for (iCol = rangeColumn[0]; iCol <= rangeColumn[1]; iCol++) {
+        section = [...section, rowSection[iCol]]
+        if (iCurrent === iInSection && jCurrent === jInSection) {
+          indexSection = section.length - 1;
+        }
+
+        iCurrent++;
+      };
+
+      jCurrent++;
+    };
+    return checkConstrains( section, indexSection, num)
+  };
 
   const handleCheckSolution = () => {
-    // const numbers = [...baseNum]
-    // const row = [...table[0]]
-    // console.log(row);
-
-    // const remain = numbers.filter((elem, i) => !row.includes(elem));
-
-    // console.log('index', duplicateNumbersIndexes(row));
-    // console.log(remain);
-
-    console.log('Passed', checkedRowConstrain(0, 0, 1));
-    console.log('Passed', checkedColumnConstrain(0, 0, 1));
+    console.log('Passed', checkedRow(0, 0, 1));
+    console.log('Passed', checkedColumn(0, 0, 1));
+    console.log('Passed', checkedSection(3, 3, 1));
+    console.log('end');
   };
 
   return (
