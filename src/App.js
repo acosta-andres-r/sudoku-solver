@@ -12,7 +12,6 @@ const classes = {
   },
   input: {
     width: '1em',
-    // height: '50px',‰
     fontSize: '25px',
     textAlign: 'center',
   }
@@ -31,7 +30,6 @@ function App() {
     const input = event.target.value
 
     const tableToAddNum = [...table];
-    // console.log(tableToAddNum[rowEL]);
     tableToAddNum[rowEL][columnEL] = baseNum.includes(input) ? input : "";
     setTable(tableToAddNum);
   };
@@ -48,7 +46,6 @@ function App() {
 
   const checkConstrains = (array, iExeption, number) => {
     const result = array.findIndex((elem, index) => {
-      console.log("Check", elem === number);
       if (index !== iExeption) {
         if (elem === number.toString()) return true;
       }
