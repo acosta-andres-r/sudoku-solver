@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import threeColumnRow from './components/row/3col-row/3col-row';
 import Row from './components/row/row';
 
 const baseNum = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -19,9 +20,10 @@ const classes = {
 
 function App() {
   const [table, setTable] = useState(Array.from(Array(9), () => new Array(9).fill("")));
+  const [solvedTable, setSolvedTable] = useState(Array.from(Array(9), () => new Array(9).fill("")));
 
   useEffect(() => {
-    // console.table(table);
+    console.table(table);
   }, [table])
 
   const handleInsertInRow = (event) => {
@@ -54,13 +56,13 @@ function App() {
     return result === -1 ? true : false;
   };
 
-  const checkedRow = (i, j, num) => {
-    const row = [...table[j]];
+  const checkedRow = (arrayTable, i, j, num) => {
+    const row = arrayTable[j];
     return checkConstrains(row, i, num);
   }
 
-  const checkedColumn = (i, j, num) => {
-    const column = table.map(elem => elem[i]);
+  const checkedColumn = (arrayTable, i, j, num) => {
+    const column = arrayTable.map(elem => elem[i]);
     return checkConstrains(column, j, num);
   }
 
@@ -69,7 +71,7 @@ function App() {
     if (i <= 5) return [3, 5];
     return [6, 8];
   };
-  const checkedSection = (i, j, num) => {
+  const checkedSection = (arrayTable, i, j, num) => {
     const rangeColumn = findRange(i);
     const rangeRow = findRange(j);
     let section = [];
@@ -83,7 +85,7 @@ function App() {
 
     let jRow;
     for (jRow = rangeRow[0]; jRow <= rangeRow[1]; jRow++) {
-      const rowSection = [...table[jRow]];
+      const rowSection = arrayTable[jRow];
 
       let iCol;
       for (iCol = rangeColumn[0]; iCol <= rangeColumn[1]; iCol++) {
@@ -97,14 +99,69 @@ function App() {
 
       jCurrent++;
     };
-    return checkConstrains( section, indexSection, num)
+    return checkConstrains(section, indexSection, num)
+  };
+
+
+  const findNextEmpty = (solvingTable) => {
+    let iRow = -1;
+    let iCol = -1;
+    solvingTable.some((row, iR) => {
+      return row.some((num, iC) => {
+        if (num === "") {
+          iRow = iR;
+          iCol = iC;
+          console.log("found", iRow);
+          return true;
+        }
+        return false
+      })
+    });
+    return [iRow, iCol];
+  };
+
+  const findValidNum = (data, iRow, iCol) => {
+    return baseNum.some((num) => {
+      if (checkedRow(data, iCol, iRow, num)
+        && checkedColumn(data, iCol, iRow, num)
+        && checkedSection(data, iCol, iRow, num)
+      ) {
+        // run solveSudoku()
+        data[iRow][iCol] = num;
+        console.log("Inserted",data);
+        if (solveSudoku(data)) {
+          return true
+        } else {
+          data[iRow][iCol] = "";
+          console.log("Removed" ,data);
+          return false
+        }
+      } else {
+        return false
+      }
+    });
+  };
+
+  const solveSudoku = (data) => {
+    const coordinate = findNextEmpty(data)
+    console.log(coordinate);
+    const row = coordinate[0];
+    const col = coordinate[1];
+
+    if (row === -1) return true;
+
+    return findValidNum(data, row, col);
+
   };
 
   const handleCheckSolution = () => {
-    console.log('Passed', checkedRow(0, 0, 1));
-    console.log('Passed', checkedColumn(0, 0, 1));
-    console.log('Passed', checkedSection(3, 3, 1));
+    // console.log('Passed', checkedRow([...table], 0, 0, 1));
+    // console.log('Passed', checkedColumn([...table], 0, 0, 1));
+    // console.log('Passed', checkedSection([...table], 3, 3, 1));
+    console.log(table);
     console.log('end');
+
+    solveSudoku([...table])
   };
 
   return (
