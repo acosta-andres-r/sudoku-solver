@@ -20,7 +20,7 @@ const row = (props) => {
         column={props.column + 3}
         row={props.row}
         handleInsertInRow={props.handleInsertInRow}
-        row3Values={props.rowValue.slice(3,3)}
+        row3Values={props.rowValue.slice(3,6)}
       />
       <div>--</div>
       <ThreeColumnRow
@@ -28,7 +28,7 @@ const row = (props) => {
         column={props.column + 6}
         row={props.row}
         handleInsertInRow={props.handleInsertInRow}
-        row3Values={props.rowValue.slice(6,3)}
+        row3Values={props.rowValue.slice(6)}
       />
     </div>
   );
